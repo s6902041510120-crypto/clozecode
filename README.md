@@ -7,6 +7,10 @@
 
 คำศัพท์ทั้งหมดเป็นภาษาอังกฤษ ส่วนคำอธิบายสลับไทย/อังกฤษได้ตอนเล่น
 
+**เล่นออนไลน์:** https://clozecode.vercel.app
+
+Deploy บน Vercel ต่อกับ GitHub repo โดยตรง — push ลง `main` แล้วขึ้นเว็บเอง
+
 ## เริ่มเล่น
 
 ```bash
@@ -36,6 +40,19 @@ npm run dev
    `firebase deploy --only firestore:rules`
 
 `.env.local` ถูก gitignore ไว้ ไม่ commit ค่าที่กรอกจริง
+
+## Deploy
+
+ใช้ Vercel ต่อกับ repo นี้อยู่แล้ว ไม่ต้องตั้งอะไรเพิ่ม — `VITE_FIREBASE_*` ทั้ง 6 ตัวถูก
+เก็บเป็น Environment Variables ของโปรเจกต์ Vercel แล้ว
+
+push ลง `main` เพื่อ deploy หรือ deploy เองจากเครื่องก็ได้
+
+```bash
+npm install -g vercel
+vercel login
+vercel deploy --prod
+```
 
 ### โครงสร้างข้อมูล
 
