@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// กติกา Firestore ของ ClozeCode
+// ข้อจำกัดที่ยอมรับไว้ตาม ADR 0004: client ส่งคะแนนขึ้นมาเองได้ จึงตรวจได้แค่ว่า
+// เขียนเป็นของตัวเองจริงและค่าไม่เกินขอบเขตที่กำหนด แต่ตรวจความถูกต้องของคะแนนจริงไม่ได้
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /scores/{topicId}/entries/{playerCode} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 12
+                    && request.resource.data.score is int
+                    && request.resource.data.score >= 0
+                    && request.resource.data.score <= 100000;
+      // อัปเดตได้เฉพาะตัวเอง และห้ามลดคะแนนทิ้งเพื่อออนไลน์เก่าไปกินอันดับต่ำ
+      allow update: if request.auth != null
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 12
+                    && request.resource.data.score is int
+                    && request.resource.data.score >= resource.data.score;
+      allow delete: if false;
+    }
+
+    // ปิดทุกอย่างนอกเหนือจากนี้
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
